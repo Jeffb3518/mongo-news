@@ -2,10 +2,10 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
-// Requiring our Note and Article models
+// Requiring Note and Article models
 var Note = require("./models/Note.js");
 var Article = require("./models/Article.js");
-// Our scraping tools
+// scraping tools
 var request = require("request");
 var cheerio = require("cheerio");
 // Mongoose mpromise deprecated - use bluebird promises
@@ -49,13 +49,13 @@ app.get("/", function(req, res) {
   res.send(index.html);
 });
 
-// A GET request to scrape the echojs website
+// A GET request to scrape the website
 app.get("/scrape", function(req, res) {
-  // First, we grab the body of the html with request
+  
   request("https://wikileaks.org/", function(error, response, html) {
-    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    
     var $ = cheerio.load(html);
-    // Now, we grab every h2 within an article tag, and do the following:
+    
     $(".title").each(function(i, element) {
 
       // Save an empty result object
@@ -69,7 +69,7 @@ app.get("/scrape", function(req, res) {
       // This effectively passes the result object to the entry (and the title and link)
       var entry = new Article(result);
 
-      // Now, save that entry to the db
+      // save that entry to the db
       entry.save(function(err, doc) {
         // Log any errors
         if (err) {
@@ -83,11 +83,11 @@ app.get("/scrape", function(req, res) {
 
     });
   });
-  // Tell the browser that we finished scraping the text
+  //finished scraping the text
   res.send("Scrape Complete");
 });
 
-// This will get the articles we scraped from the mongoDB
+// This will get the articles scraped from the mongoDB
 app.get("/articles", function(req, res) {
   // Grab every doc in the Articles array
   Article.find({}, function(error, doc) {
